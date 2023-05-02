@@ -85,7 +85,7 @@ String processComMessage(String data)
     }
     else
     {
-      wifi_set_credentials(ssid.c_str(), password.c_str());
+      wifi_setCredentials(ssid.c_str(), password.c_str());
       mainSettings.putString("wifi_ssid", ssid);
       mainSettings.putString("wifi_pass", password);
 
@@ -398,7 +398,7 @@ String processComMessage(String data)
     curvesStore.clear();
     returnData = format_string("OK FACTORY\r\n");
   }
-#ifdef DEBUG
+#ifdef ENABLE_DEBUG
   else if (command == "HARD_CLEAR")
   {
     nvs_flash_erase(); // erase the NVS partition and...

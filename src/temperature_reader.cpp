@@ -4,18 +4,20 @@
 #include <DallasTemperature.h>
 
 #include "settings.h"
+#include "mic/debug.h"
 #include "pins.h"
 
 OneWire temperatureSensorsBus(ONE_WIRE_BUS);
 DallasTemperature temperatureSensors(&temperatureSensorsBus); // 1k odpor
 
 float temperatures[20] = {0};
+uint8_t number_of_sensors;
 
 void temperature_read_task(void *)
 {
   while (true)
   {
-    for (uint8_t i = 0; i < temperatureSensors.getDeviceCount(); i++)
+    for (uint8_t i = 0; i < number_of_sensors; i++)
     {
       temperatures[i] = temperatureSensors.getTempCByIndex(i);
       vTaskDelay(pdMS_TO_TICKS(5));
@@ -28,24 +30,20 @@ void temperature_read_task(void *)
 void temp_read_begin()
 {
   temperatureSensors.begin();
-  uint8_t number_of_sensors = temperatureSensors.getDeviceCount();
+  number_of_sensors = min(temperatureSensors.getDeviceCount(), static_cast<uint8_t>(20));
 
   if (number_of_sensors == 0)
   {
-#ifdef DEBUG
-    Serial.printf("[Temp Reader] No temperature sensors detected\r\n");
-#endif
+    DEBUG("[Temp Reader] No temperature sensors detected\r\n");
     return;
   }
 
-#ifdef DEBUG
-  Serial.printf("[Temp Reader] Found %d temperature probes\r\n");
-#endif
+  DEBUG("[Temp Reader] Found %d temperature probes\r\n");
 
   xTaskCreateUniversal(temperature_read_task, "temp_read", 2048, NULL, 1, NULL, 0);
 }
 
 uint8_t temp_reader_sensor_count()
 {
-  return temperatureSensors.getDeviceCount();
+  return number_of_sensors;
 }

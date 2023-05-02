@@ -1,5 +1,6 @@
 #include "settings.h"
 
+#include "mic/debug.h"
 #include "communication/message_processing.h"
 
 #ifdef WIFI_CONNECTION
@@ -27,9 +28,7 @@ void communication_task(void *)
       String data = COM_SERIAL.readStringUntil('\n');
       data.trim();
 
-#ifdef DEBUG
-      Serial.printf("[Communication Serial] Received message: %s\r\n", data.c_str());
-#endif
+      DEBUG("[Communication Serial] Received message: %s\r\n", data.c_str());
 
       COM_SERIAL.print(processComMessage(data));
     }

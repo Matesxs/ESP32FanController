@@ -2,7 +2,7 @@
 
 #include <WiFi.h>
 
-#include "settings.h"
+#include "mic/debug.h"
 
 WiFiServer wifiServer(80);
 bool clientConnected = false;
@@ -22,9 +22,7 @@ void tcp_server_update()
       currentClient.stop();
       clientConnected = false;
 
-#ifdef DEBUG
-      Serial.printf("[TCP Server] Client disconnected");
-#endif
+      DEBUG("[TCP Server] Client disconnected\r\n");
     }
   }
   else
@@ -35,9 +33,7 @@ void tcp_server_update()
       currentClient = client;
       clientConnected = true;
 
-#ifdef DEBUG
-      Serial.printf("[TCP Server] Client connected");
-#endif
+      DEBUG("[TCP Server] Client connected\r\n");
     }
   }
 }
@@ -55,9 +51,7 @@ String tcp_message_read()
     buffer = currentClient.readStringUntil('\n');
     buffer.trim();
 
-#ifdef DEBUG
-    Serial.printf("[TCP] Received message: %s\r\n", buffer.c_str());
-#endif
+    DEBUG("[TCP] Received message: %s\r\n", buffer.c_str());
   }
 
   return buffer;
@@ -69,9 +63,9 @@ void tcp_message_send(String data)
   {
     currentClient.print(data.c_str());
 
-#ifdef DEBUG
+#ifdef ENABLE_DEBUG
     data.trim();
-    Serial.printf("[TCP] Send message: %s\r\n", data.c_str());
+    DEBUG("[TCP] Send message: %s\r\n", data.c_str());
 #endif
   }
 }

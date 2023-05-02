@@ -6,6 +6,7 @@
 #include "mic/data_share.h"
 #include "settings.h"
 #include "temperature_reader.h"
+#include "mic/debug.h"
 
 void fan_speed_control_task(void *)
 {
@@ -22,9 +23,7 @@ void fan_speed_control_task(void *)
           double targetPower = fanData[i].curve.eval(sourceTemp);
           fanData[i].lerper.set(targetPower, fanData[i].dirty ? FAN_SPEED_RAMP_TIME_DIRTY_MS : FAN_SPEED_RAMP_TIME_MS);
 
-#ifdef DEBUG
-          Serial.printf("[Fan Temperature Control] Evaluating temperature curve for fan %d to %.2f target power\r\n", i, targetPower);
-#endif
+          DEBUG("[Fan Temperature Control] Evaluating temperature curve for fan %d to %.2f target power\r\n", i, targetPower);
 
           fanData[i].dirty = false;
           fanData[i]._powerTemperature = sourceTemp;
@@ -36,9 +35,7 @@ void fan_speed_control_task(void *)
         auto pinSettings = FAN_PINS_HOLDER[i];
         fanData[i].lerper.update();
 
-#ifdef DEBUG
-        Serial.printf("[Fan Speed Control] Setting speed for fan %d to %.2f\r\n", i, fanData[i].currentPower);
-#endif
+        DEBUG("[Fan Speed Control] Setting speed for fan %d to %.2f\r\n", i, fanData[i].currentPower);
 
         ledcWrite(pinSettings.pwmChannel, static_cast<uint32_t>(map(fanData[i].currentPower, 0.0, 100.0, 0.0, static_cast<double>(MAX_FAN_PWM_VALUE))));
       }

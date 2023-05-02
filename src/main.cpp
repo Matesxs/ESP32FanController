@@ -29,6 +29,7 @@
 #include "led_strips/effects.h"
 #endif
 
+#include "mic/debug.h"
 #include "pins.h"
 #include "mic/data_share.h"
 #include "tacho.h"
@@ -60,7 +61,9 @@ void setup()
   delay(50);
 
 #ifdef WIFI_CONNECTION
-  wifi_setup(mainSettings.isKey("wifi_ssid") ? mainSettings.getString("wifi_ssid", "").c_str() : "", mainSettings.isKey("wifi_pass") ? mainSettings.getString("wifi_pass", "").c_str() : "");
+  wifi_setup();
+  wifi_setCredentials(mainSettings.isKey("wifi_ssid") ? mainSettings.getString("wifi_ssid", "").c_str() : "", mainSettings.isKey("wifi_pass") ? mainSettings.getString("wifi_pass", "").c_str() : "");
+  wifi_enable();
 #ifdef ENABLE_OTA
   OTA_setup();
 #endif
@@ -68,9 +71,7 @@ void setup()
 #ifdef CUSTOM_DNS
   if (!MDNS.begin(mainSettings.isKey("dns_name") ? mainSettings.getString("dns_name", DEFAULT_DNS_NAME).c_str() : DEFAULT_DNS_NAME)) 
   {
-#ifdef DEBUG
-    Serial.println("[MDNS] Error setting up MDNS responder!");
-#endif
+    DEBUG("[MDNS] Error setting up MDNS responder!\r\n");
   }
 #endif
 #endif
@@ -78,17 +79,15 @@ void setup()
 #ifdef LED_STRIPS_ENABLE
   if (mainSettings.isKey("led_ch1_c"))
   {
-#ifdef DEBUG
-    Serial.printf("[Main] Found led strip channel settings for channel 1\r\n");
-#endif
+    uint16_t numberOfLeds = mainSettings.getUShort("led_ch1_c", 10);
 
-    ledStripChannel1 = new StripHandler(mainSettings.getUShort("led_ch1_c", 5), LED_STRIP1_DATA_PIN);
+    DEBUG("[Main] Found led strip channel settings for channel 1 (%d)\r\n", numberOfLeds);
+
+    ledStripChannel1 = new StripHandler(numberOfLeds, LED_STRIP1_DATA_PIN);
 
     if (mainSettings.isKey("led_ch1_m"))
     {
-#ifdef DEBUG
-      Serial.printf("[Main] Found led strip effect settings for channel 1\r\n");
-#endif
+      DEBUG("[Main] Found led strip effect settings for channel 1\r\n");
 
       ledStripChannel1->setTarget(mainSettings.getString("led_ch1_m"));
     }
@@ -96,17 +95,15 @@ void setup()
 
   if (mainSettings.isKey("led_ch2_c"))
   {
-#ifdef DEBUG
-    Serial.printf("[Main] Found led strip channel settings for channel 2\r\n");
-#endif
+    uint16_t numberOfLeds = mainSettings.getUShort("led_ch2_c", 10);
 
-    ledStripChannel2 = new StripHandler(mainSettings.getUShort("led_ch2_c", 5), LED_STRIP2_DATA_PIN);
+    DEBUG("[Main] Found led strip channel settings for channel 2 (%d)\r\n", numberOfLeds);
+
+    ledStripChannel2 = new StripHandler(numberOfLeds, LED_STRIP2_DATA_PIN);
 
     if (mainSettings.isKey("led_ch2_m"))
     {
-#ifdef DEBUG
-      Serial.printf("[Main] Found led strip effect settings for channel 2\r\n");
-#endif
+      DEBUG("[Main] Found led strip effect settings for channel 2\r\n");
 
       ledStripChannel2->setTarget(mainSettings.getString("led_ch2_m"));
     }
@@ -128,9 +125,7 @@ void setup()
 
     if (curvesStore.isKey(key.c_str()))
     {
-#ifdef DEBUG
-      Serial.printf("[Main] Found curve for fan %d\r\n", i);
-#endif
+      DEBUG("[Main] Found curve for fan %d\r\n", i);
 
       if (curvesStore.getBytes(key.c_str(), static_cast<void*>(&fanData[i].curve), sizeof(TemperatureCurve)) != sizeof(TemperatureCurve))
         fanData[i].curve.setConstant(DEFAULT_PWM_PERCENT);
