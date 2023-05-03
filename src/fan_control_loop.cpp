@@ -35,9 +35,10 @@ void fan_speed_control_task(void *)
         auto pinSettings = FAN_PINS_HOLDER[i];
         fanData[i].lerper.update();
 
-        DEBUG("[Fan Speed Control] Setting speed for fan %d to %.2f\r\n", i, fanData[i].currentPower);
+        auto pwmValue = static_cast<uint32_t>(map(fanData[i].currentPower, 0.0, 100.0, static_cast<double>(MAX_FAN_PWM_VALUE), 0.0));
+        DEBUG("[Fan Speed Control] Setting speed for fan %d to %.2f (%d)\r\n", i, fanData[i].currentPower, pwmValue);
 
-        ledcWrite(pinSettings.pwmChannel, static_cast<uint32_t>(map(fanData[i].currentPower, 0.0, 100.0, 0.0, static_cast<double>(MAX_FAN_PWM_VALUE))));
+        ledcWrite(pinSettings.pwmChannel, pwmValue);
       }
     }
 

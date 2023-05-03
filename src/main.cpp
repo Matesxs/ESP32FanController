@@ -117,7 +117,7 @@ void setup()
     pinMode(pinSettings.pwmPin, OUTPUT);
     ledcSetup(pinSettings.pwmChannel, FAN_PWM_FREQ, FAN_PWM_RES);
     ledcAttachPin(pinSettings.pwmPin, pinSettings.pwmChannel);
-    ledcWrite(pinSettings.pwmChannel, 0);
+    ledcWrite(pinSettings.pwmChannel, MAX_FAN_PWM_VALUE);
     
     fanData[i].lerper.setReference(&fanData[i].currentPower);
     

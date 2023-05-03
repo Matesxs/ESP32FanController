@@ -17,10 +17,14 @@ void temperature_read_task(void *)
 {
   while (true)
   {
+    temperatureSensors.requestTemperatures();
+
     for (uint8_t i = 0; i < number_of_sensors; i++)
     {
       temperatures[i] = temperatureSensors.getTempCByIndex(i);
-      vTaskDelay(pdMS_TO_TICKS(5));
+      DEBUG("[Temp Reader] Temp sen %d: %.3f\n", i, temperatures[i]);
+
+      vTaskDelay(pdMS_TO_TICKS(1));
     }
 
     vTaskDelay(pdMS_TO_TICKS(1000));
@@ -38,7 +42,7 @@ void temp_read_begin()
     return;
   }
 
-  DEBUG("[Temp Reader] Found %d temperature probes\r\n");
+  DEBUG("[Temp Reader] Found %d temperature probes\r\n", number_of_sensors);
 
   xTaskCreateUniversal(temperature_read_task, "temp_read", 2048, NULL, 1, NULL, 0);
 }

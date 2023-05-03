@@ -30,8 +30,8 @@ DynamicJsonDocument generateData()
   doc["temp_sens"][0]["val"] = externalTemperature;
   for (uint8_t i = 0; i < temp_reader_sensor_count(); i++)
   {
-    doc["temp_sens"][i]["id"] = pow(2, i + 1);
-    doc["temp_sens"][i]["val"] = temperatures[i];
+    doc["temp_sens"][i + 1]["id"] = pow(2, i + 1);
+    doc["temp_sens"][i + 1]["val"] = temperatures[i];
   }
 
   for (size_t i = 0; i < FAN_COUNT; i++)
@@ -173,10 +173,11 @@ String processComMessage(String data)
   }
   else if (command == "SET_CURVE")
   {
-    // SET_CURVE 0 40@0;41@10;60@30.5;80@45
-    // SET_CURVE 0 40@50
-    // SET_CURVE 1 20@10;60@30.5;90@10
-    // SET_CURVE 2 0@30
+    // SET_CURVE 0 40@20;60@50;80@100
+    // SET_CURVE 0 40@100
+    // SET_CURVE 0 40@0
+    // SET_CURVE 1 30@35;60@50;90@100
+    // SET_CURVE 1 0@0
 
     String fanIndexString = getSubstring(data, ' ', 1);
     String curveString = getSubstring(data, ' ', 2);
@@ -224,7 +225,8 @@ String processComMessage(String data)
   else if (command == "SET_SOURCE")
   {
     // SET_SOURCE 0 1
-    // SET_SOURCE 1 1
+    // SET_SOURCE 1 6
+    // SET_SOURCE 0 6
 
     String fanIndexString = getSubstring(data, ' ', 1);
     String sourceString = getSubstring(data, ' ', 2);
