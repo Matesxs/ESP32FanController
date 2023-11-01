@@ -3,6 +3,7 @@
 ![Image of final board](/media/20230403_162902.jpg)
 
 ## Description
+### This project is still in development so lot of things can be untested or not working at all!
 
 ```text
 ESP32 10 channel pwm fan controller with control over tcp sockets and serial, 
@@ -27,7 +28,7 @@ predefined effects (some of them use the temperature probes to be able to displa
 
 ## Todo
 
-- [ ] Publish Schematics for board
+- [x] Publish Schematics for board
 
 ## References
 

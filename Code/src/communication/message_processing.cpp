@@ -176,7 +176,7 @@ String processComMessage(String data)
     // SET_CURVE 0 40@20;60@50;80@100
     // SET_CURVE 0 40@100
     // SET_CURVE 0 40@0
-    // SET_CURVE 1 30@35;60@50;90@100
+    // SET_CURVE 1 29@0;30@35;60@50;90@100
     // SET_CURVE 1 0@0
 
     String fanIndexString = getSubstring(data, ' ', 1);
