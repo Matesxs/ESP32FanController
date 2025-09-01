@@ -1,6 +1,6 @@
 #pragma once
 
-#include "mic/datastores.h"
+#include "datastores.h"
 
 const FanPins FAN_PINS_HOLDER[] = {
   {36, 25, 0},
@@ -15,7 +15,7 @@ const FanPins FAN_PINS_HOLDER[] = {
   {21, 5, 9}
 };
 
-const size_t FAN_COUNT = sizeof(FAN_PINS_HOLDER) / sizeof(FAN_PINS_HOLDER[0]);
+constexpr size_t FAN_COUNT = sizeof(FAN_PINS_HOLDER) / sizeof(FAN_PINS_HOLDER[0]);
 
 #define ONE_WIRE_BUS 16
 #define LED_STRIP1_DATA_PIN 22
