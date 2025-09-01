@@ -95,6 +95,7 @@ void tachoSensingInit()
     yieldIfNecessary(lastYield);
   }
 
+#if DEBUG_LEVEL != 0
   if (runningFansCount > 0)
   {
     LOG_DEBUG("Detected %d running fans", runningFansCount);
@@ -103,6 +104,7 @@ void tachoSensingInit()
   {
     LOG_ERROR("No running fans detected");
   }
+#endif
 
   xTaskCreateUniversal(pollFanRPMTask, "tacho_sen", 1024, nullptr, 2, nullptr, 1);
 }

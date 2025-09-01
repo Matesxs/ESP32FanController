@@ -6,7 +6,6 @@
 #include <WebSerialLite.h>
 #include <custom_debug.h>
 #include <pwmControl.h>
-#include <driver/ledc.h>
 
 #include "pins.h"
 #include "settings.h"
