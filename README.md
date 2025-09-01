@@ -29,6 +29,8 @@ predefined effects (some of them use the temperature probes to be able to displa
 ## Todo
 
 - [x] Publish Schematics for board
+- [ ] Rework fan control
+- [ ] Rework led control
 
 ## References
 
