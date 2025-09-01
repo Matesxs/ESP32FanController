@@ -1,0 +1,50 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_TAG
+
+stages:
+  - build
+  - release
+
+variables:
+  FIRMWARE_NAME: "FanController_firmware_v${CI_COMMIT_TAG}"
+  PACKAGE_NAME: "matesxs-fan-controller"
+  REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic"
+
+include:
+  - component: $CI_SERVER_FQDN/components/platformio/build-firmware@1.1.0
+    inputs:
+      build-env: release_ota
+      project-dir: Code
+      job-stage: build
+      job-prefix: "fan-controller"
+      firmware-name: $FIRMWARE_NAME
+
+upload-job:
+  stage: release
+  image: curlimages/curl:latest
+  script:
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+       --upload-file "${FIRMWARE_NAME}.bin" \
+       ${REGISTRY_URL}/${PACKAGE_NAME}/${CI_COMMIT_TAG}/
+    - |
+      curl --header "JOB-TOKEN: ${CI_JOB_TOKEN}" \
+       --upload-file "${FIRMWARE_NAME}-merged.bin" \
+       ${REGISTRY_URL}/${PACKAGE_NAME}/${CI_COMMIT_TAG}/
+
+release-job:
+  stage: release
+  image: registry.gitlab.com/gitlab-org/release-cli:latest
+  script:
+    - echo "Running release"
+  release:
+    tag_name: $CI_COMMIT_TAG
+    name: "Release v${CI_COMMIT_TAG}"
+    description: $CI_COMMIT_TAG_MESSAGE
+    assets:
+      links:
+        - name: "Firmware with OTA Full"
+          url: "${REGISTRY_URL}/${PACKAGE_NAME}/${CI_COMMIT_TAG}/${FIRMWARE_NAME}-merged.bin"
+        - name: "Firmware with OTA Only APP"
+          url: "${REGISTRY_URL}/${PACKAGE_NAME}/${CI_COMMIT_TAG}/${FIRMWARE_NAME}.bin"
