@@ -12,12 +12,10 @@ variables:
   REGISTRY_URL: "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic"
 
 include:
-  - component: $CI_SERVER_FQDN/components/platformio/build-firmware@1.1.0
+  - component: $CI_SERVER_FQDN/components/platformio/build-firmware@1.2.0
     inputs:
       build-env: release_ota
       project-dir: Code
-      job-stage: build
-      job-prefix: "fan-controller"
       firmware-name: $FIRMWARE_NAME
 
 upload-job:
