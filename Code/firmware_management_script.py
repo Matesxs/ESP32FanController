@@ -28,12 +28,9 @@ def create_binaries(source, target, env):
       "merge_bin",
       "-o",
       merged_bin,
-      "--flash_mode",
-      board_config.get("build.flash_mode", "dio"),
-      "--flash_freq",
-      "${__get_board_f_flash(__env__)}",
-      "--flash_size",
-      board_config.get("upload.flash_size", "4MB"),
+      "--flash_mode keep",
+      "--flash_freq keep",
+      "--flash_size keep",
       *flash_images,
     ]
   )
